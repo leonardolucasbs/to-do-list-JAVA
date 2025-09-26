@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity // Indica que esta classe é uma entidade JPA
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario {
