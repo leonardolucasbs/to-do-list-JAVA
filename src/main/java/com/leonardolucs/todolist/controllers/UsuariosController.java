@@ -2,6 +2,7 @@ package com.leonardolucs.todolist.controllers;
 
 import com.leonardolucs.todolist.models.dto.UsuarioDTO;
 import com.leonardolucs.todolist.models.dto.UsuarioPublicoDTO;
+import com.leonardolucs.todolist.models.entities.Usuario;
 import com.leonardolucs.todolist.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class UsuariosController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioPublicoDTO>> getUsuarios(){
-        return ResponseEntity.ok(usuarioService.getAllUsuarios());
+    public ResponseEntity<List<Usuario>> getUsuarios(){
+        return ResponseEntity.ok(usuarioService.getAllUsuariosEntities());
     }
 
     @PutMapping("/{id}")

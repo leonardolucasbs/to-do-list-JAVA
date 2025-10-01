@@ -1,24 +1,28 @@
 package com.leonardolucs.todolist.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity // Indica que esta classe é uma entidade JPA
+import java.util.List;
+
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Indica que o ID é gerado automaticamente
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
     private String senha;
+
+    @OneToMany(mappedBy = "usuario") //mapeamento para trazer os dados
+    private List<Task> tasks;
 
     public Usuario(String nome, String email, String senha) {
         this.nome = nome;

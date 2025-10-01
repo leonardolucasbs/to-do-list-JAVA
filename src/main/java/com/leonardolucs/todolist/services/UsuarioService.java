@@ -19,7 +19,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
 
     private Optional<Usuario> findUsuarioById(Long id) {
-        return usuarioRepository.findById(id); //SELECT * FROM usuario WHERE id = ?
+        return usuarioRepository.findById(id);
     }
 
     private UsuarioPublicoDTO criaUsuarioPublico(Usuario usuario) {
@@ -37,7 +37,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioPublicoDTO> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll(); //SELECT * FROM usuario
+        List<Usuario> usuarios = usuarioRepository.findAll();
         List<UsuarioPublicoDTO> usuariosPublicos = new ArrayList<>();
 
         for (Usuario usuario : usuarios) {
@@ -47,10 +47,13 @@ public class UsuarioService {
 
         return usuariosPublicos;
     }
+    public List<Usuario> getAllUsuariosEntities(){
+        return usuarioRepository.findAll();
+    }
 
     public void createUsuario(UsuarioDTO usuarioDTO) {
         Usuario novoUsuario = new Usuario(usuarioDTO.getNome(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
-        usuarioRepository.save(novoUsuario); //INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)
+        usuarioRepository.save(novoUsuario);
     }
 
     public void deletaUsuario(Long id) {
