@@ -8,25 +8,25 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "users") // Explicitamente nomeia a tabela como 'users' no banco de dados
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-public class Usuario {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String name;
     private String email;
-    private String senha;
+    private String password;
 
-    @OneToMany(mappedBy = "usuario") //mapeamento para trazer os dados
+    @OneToMany(mappedBy = "user") // Será ajustado na entidade Task
     private List<Task> tasks;
 
-    public Usuario(String nome, String email, String senha) {
-        this.nome = nome;
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
-        this.senha = senha;
+        this.password = password;
     }
 }

@@ -1,15 +1,29 @@
 package com.leonardolucs.todolist.models.dto;
-import lombok.*;
+
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-@Getter @Setter
-@Data @AllArgsConstructor @NoArgsConstructor
-public class TaskDTO { // trocar para record
-    private String titulo;
-//    private String prioridade;
-    private LocalDate data;
-    private LocalTime horario;
-    private String descricao;
-    private Long usuarioId ; // trocar para UsuarioDTO
+import java.util.Set;
+
+public record TaskDTO(
+        @NotBlank(message = "The title cannot be blank.")
+        String title,
+
+        @NotNull(message = "The date cannot be null.")
+        @FutureOrPresent(message = "The task date cannot be in the past.")
+        LocalDate date,
+
+        @NotNull(message = "The time cannot be null.")
+        LocalTime time,
+
+        String description,
+
+        @NotNull(message = "The user ID cannot be null.")
+        Long userId,
+
+        Set<Long> labelIds
+) {
 }

@@ -1,8 +1,11 @@
 package com.leonardolucs.todolist.controllers;
 
+import com.leonardolucs.todolist.models.dto.PublicUserDTO;
 import com.leonardolucs.todolist.models.dto.TaskDTO;
 import com.leonardolucs.todolist.models.entities.Task;
+import com.leonardolucs.todolist.models.entities.User;
 import com.leonardolucs.todolist.services.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<Task> createTask(@Valid @RequestBody  TaskDTO taskDTO) {
         Task task = taskService.createTask(taskDTO); //devolver TaskDTO, nunca voltar a entidade original
         return ResponseEntity.status(201).body(task);
     }
@@ -24,10 +27,10 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks());
 
     }
-    //@GetMapping(/{id})
-    //public ResponseEntity<TaskDTO> getTask(@PathVariable Long id){
-    //    return ResponseEntity.ok(taskService.getTaskById(id));
-    //}
+   @GetMapping("/{id}")
+   public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id){
+
+   }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long id){

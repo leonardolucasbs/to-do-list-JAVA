@@ -1,63 +1,75 @@
 package com.leonardolucs.todolist.services;
 
 import com.leonardolucs.todolist.models.dto.TaskDTO;
+import com.leonardolucs.todolist.models.entities.Labels;
 import com.leonardolucs.todolist.models.entities.Task;
-import com.leonardolucs.todolist.models.entities.Usuario;
+import com.leonardolucs.todolist.models.entities.User;
+import com.leonardolucs.todolist.repositories.LabelsRepository;
 import com.leonardolucs.todolist.repositories.TaskRepository;
-import com.leonardolucs.todolist.repositories.UsuarioRepository;
+import com.leonardolucs.todolist.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
-    private final UsuarioRepository usuarioRepository;
-    
+    private final UserRepository userRepository;
+    private final LabelsRepository labelsRepository;
+
     public Task createTask(TaskDTO taskDTO) {
-        Usuario usuario = usuarioRepository.findById(taskDTO.getUsuarioId()).orElseThrow(() -> new IllegalArgumentException("Usuário " + taskDTO.getUsuarioId() + " não encontrado"));
+        User user = userRepository.findById(taskDTO.userId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + taskDTO.userId()));
+
+        Set<Labels> labels = new HashSet<>();
+        if (taskDTO.labelIds() != null && !taskDTO.labelIds().isEmpty()) {
+            labels = new HashSet<>(labelsRepository.findAllById(taskDTO.labelIds()));
+        }
 
         Task task = new Task();
-        task.setTitulo(taskDTO.getTitulo());
-        task.setDescricao(taskDTO.getDescricao());
-//        task.setPrioridade(taskDTO.getPrioridade());
-        task.setData(taskDTO.getData());
-        task.setHorario(taskDTO.getHorario());
-        task.setUsuario(usuario);
+        task.setTitle(taskDTO.title());
+        task.setDescription(taskDTO.description());
+        task.setDate(taskDTO.date());
+        task.setTime(taskDTO.time());
+        task.setUser(user);
+        task.setLabels(labels);
 
         return taskRepository.save(task);
     }
-    public TaskDTO createTaskDTO(Task task){
+
+    public TaskDTO toDTO(Task task){
+        Set<Long> labelIds = task.getLabels() != null ? task.getLabels().stream()
+                .map(Labels::getId)
+                .collect(Collectors.toSet()) : new HashSet<>();
+
         return new TaskDTO(
-                task.getTitulo(),
-//                task.getPrioridade(),
-                task.getData(),
-                task.getHorario(),
-                task.getDescricao(),
-                task.getUsuario().getId());
+                task.getTitle(),
+                task.getDate(),
+                task.getTime(),
+                task.getDescription(),
+                task.getUser().getId(),
+                labelIds
+        );
     }
 
     public void deleteTask(Long id){
         taskRepository.deleteById(id);
     }
+
     public Optional<Task> getTaskById(Long id){
-        Optional<Task> task =  taskRepository.findById(id);
-        return task;
+        return taskRepository.findById(id);
     }
+
     public List<TaskDTO> getAllTasks(){
-
-        List<Task> tasks = taskRepository.findAll();
-        List<TaskDTO> taskDTO = new ArrayList<>();
-
-        for(Task task : tasks){
-            TaskDTO  transformaTaskDTO = createTaskDTO(task);
-            taskDTO.add(transformaTaskDTO);
-        }
-        return taskDTO;
+        return taskRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
-
 }
