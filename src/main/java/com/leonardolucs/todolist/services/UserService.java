@@ -48,10 +48,6 @@ public class UserService {
         return publicUsers;
     }
 
-    public List<User> getAllUserEntities(){
-        return userRepository.findAll();
-    }
-
     public void createUser(UserDTO userDTO) {
         User newUser = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         userRepository.save(newUser);

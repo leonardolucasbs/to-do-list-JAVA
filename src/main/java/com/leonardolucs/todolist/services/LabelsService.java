@@ -38,7 +38,7 @@ public class LabelsService {
         return labelsRepository.findById(id).map(existingLabel -> {
             existingLabel.setName(labelsDTO.getName());
             return labelsRepository.save(existingLabel);
-        }).orElseThrow(() -> new RuntimeException("Label not found with id: " + id));
+        }).orElseThrow(() -> new RuntimeException("Label not found"));
     }
 
     public void deleteLabel(Long id) {
