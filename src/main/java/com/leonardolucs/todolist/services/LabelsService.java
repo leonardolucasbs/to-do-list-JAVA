@@ -1,8 +1,8 @@
 package com.leonardolucs.todolist.services;
 
 import com.leonardolucs.todolist.models.dto.LabelsDTO;
-import com.leonardolucs.todolist.models.entities.Labels;
-import com.leonardolucs.todolist.repositories.LabelsRepository;
+import com.leonardolucs.todolist.models.entities.Label;
+import com.leonardolucs.todolist.repositories.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,38 +13,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LabelsService {
 
-    private final LabelsRepository labelsRepository;
+    private final LabelRepository labelRepository;
 
-    private Labels toEntity(LabelsDTO dto) {
-        Labels label = new Labels();
+    private Label toEntity(LabelsDTO dto) {
+        Label label = new Label();
         label.setName(dto.getName());
         return label;
     }
 
-    public Labels createLabel(LabelsDTO labelsDTO) {
-        Labels label = toEntity(labelsDTO);
-        return labelsRepository.save(label);
+    public Label createLabel(LabelsDTO labelsDTO) {
+        Label label = toEntity(labelsDTO);
+        return labelRepository.save(label);
     }
 
-    public List<Labels> getAllLabels() {
-        return labelsRepository.findAll();
+    public List<Label> getAllLabels() {
+        return labelRepository.findAll();
     }
 
-    public Optional<Labels> getLabelById(Long id) {
-        return labelsRepository.findById(id);
+    public Optional<Label> getLabelById(Long id) {
+        return labelRepository.findById(id);
     }
 
-    public Labels updateLabel(Long id, LabelsDTO labelsDTO) {
-        return labelsRepository.findById(id).map(existingLabel -> {
+    public Label updateLabel(Long id, LabelsDTO labelsDTO) {
+        return labelRepository.findById(id).map(existingLabel -> {
             existingLabel.setName(labelsDTO.getName());
-            return labelsRepository.save(existingLabel);
+            return labelRepository.save(existingLabel);
         }).orElseThrow(() -> new RuntimeException("Label not found"));
     }
 
     public void deleteLabel(Long id) {
-        if (!labelsRepository.existsById(id)) {
+        if (!labelRepository.existsById(id)) {
             throw new RuntimeException("Label not found with id: " + id);
         }
-        labelsRepository.deleteById(id);
+        labelRepository.deleteById(id);
     }
 }

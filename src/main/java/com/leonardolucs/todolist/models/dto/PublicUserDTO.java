@@ -1,4 +1,6 @@
 package com.leonardolucs.todolist.models.dto;
 
-public record PublicUserDTO(Long id, String name, String email) {
+import java.util.List;
+
+public record PublicUserDTO(Long id, String name, String email, List<TaskDTO> tasks) {
 }

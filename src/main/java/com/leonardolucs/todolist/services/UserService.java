@@ -1,9 +1,10 @@
 package com.leonardolucs.todolist.services;
 
 import com.leonardolucs.todolist.models.dto.PublicUserDTO;
-import com.leonardolucs.todolist.repositories.UserRepository;
 import com.leonardolucs.todolist.models.dto.UserDTO;
+import com.leonardolucs.todolist.models.entities.Task;
 import com.leonardolucs.todolist.models.entities.User;
+import com.leonardolucs.todolist.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,20 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+
+    public User findEntityById(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     private PublicUserDTO createPublicUserDTO(User user) {
+
         return new PublicUserDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail());
+                user.getEmail(),
+                user.getTasks().stream().map(Task::toDto).collect(Collectors.toList()));
+
     }
 
     public ResponseEntity<?> getUser(Long id) {

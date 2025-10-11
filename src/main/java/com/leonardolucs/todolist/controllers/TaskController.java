@@ -1,7 +1,6 @@
 package com.leonardolucs.todolist.controllers;
 
 import com.leonardolucs.todolist.models.dto.TaskDTO;
-import com.leonardolucs.todolist.models.entities.Task;
 import com.leonardolucs.todolist.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,24 +17,24 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDTO taskDTO) {
-        taskService.createTask(taskDTO);
+    public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDTO taskDTO, @RequestParam Long userId) {
+        taskService.createTask(taskDTO, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskDTO>> getTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<List<TaskDTO>> getTasks(@RequestParam Long userId) {
+        return ResponseEntity.ok(taskService.getAllTasks(userId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getTaskById(@PathVariable Long id) {
-        return ResponseEntity.ok(taskService.getTaskById(id));
+    @GetMapping("/{taskId}")
+    public ResponseEntity<?> getTaskById(@PathVariable Long taskId) {
+        return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
         return ResponseEntity.noContent().build();
     }
 

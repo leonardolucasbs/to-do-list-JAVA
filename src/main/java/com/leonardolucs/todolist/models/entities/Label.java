@@ -9,12 +9,12 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Entity
+@Entity(name = "labels")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Labels {
+public class Label {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

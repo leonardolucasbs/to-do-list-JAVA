@@ -7,28 +7,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@Entity(name = "users")
+@Entity(name = "descriptions")
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Getter
-public class User {
+@Setter
+public class Description {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String email;
-    private String password;
 
-    @OneToMany(mappedBy = "user")
+    private String description;
+
+    @OneToOne
+    @JoinColumn(name = "task_id")
     @JsonIgnore
-    private List<Task> tasks;
+    private Task task;
 
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    public Description(String description, Task task) {
+        this.description = description;
+        this.task = task;
     }
 }

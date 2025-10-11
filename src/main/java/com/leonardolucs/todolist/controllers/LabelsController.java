@@ -1,7 +1,7 @@
 package com.leonardolucs.todolist.controllers;
 
 import com.leonardolucs.todolist.models.dto.LabelsDTO;
-import com.leonardolucs.todolist.models.entities.Labels;
+import com.leonardolucs.todolist.models.entities.Label;
 import com.leonardolucs.todolist.services.LabelsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +19,28 @@ public class LabelsController {
     private final LabelsService labelsService;
 
     @PostMapping
-    public ResponseEntity<Labels> createLabel(@Valid @RequestBody LabelsDTO labelsDTO) {
-        Labels createdLabel = labelsService.createLabel(labelsDTO);
+    public ResponseEntity<Label> createLabel(@Valid @RequestBody LabelsDTO labelsDTO) {
+        Label createdLabel = labelsService.createLabel(labelsDTO);
         return new ResponseEntity<>(createdLabel, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Labels>> getAllLabels() {
-        List<Labels> labels = labelsService.getAllLabels();
+    public ResponseEntity<List<Label>> getAllLabels() {
+        List<Label> labels = labelsService.getAllLabels();
         return ResponseEntity.ok(labels);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Labels> getLabelById(@PathVariable Long id) {
+    public ResponseEntity<Label> getLabelById(@PathVariable Long id) {
         return labelsService.getLabelById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Labels> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelsDTO labelsDTO) {
+    public ResponseEntity<Label> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelsDTO labelsDTO) {
         try {
-            Labels updatedLabel = labelsService.updateLabel(id, labelsDTO);
+            Label updatedLabel = labelsService.updateLabel(id, labelsDTO);
             return ResponseEntity.ok(updatedLabel);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

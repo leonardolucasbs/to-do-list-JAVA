@@ -1,16 +1,17 @@
 package com.leonardolucs.todolist.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leonardolucs.todolist.models.dto.TaskDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity(name = "tasks")
 @NoArgsConstructor
@@ -23,9 +24,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private LocalTime time;
-    private LocalDate date;
-    private String description;
+    private LocalDateTime dateTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -38,5 +37,17 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
-    private Set<Labels> labels = new HashSet<>();
+    private Set<Label> labels = new HashSet<>();
+
+    @OneToOne(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Description description;
+
+    public TaskDTO toDto(){
+        return new TaskDTO(
+                title,
+                dateTime,
+                description == null ? "" : description.getDescription(),
+                labels.stream().map(Label::getId).collect(Collectors.toSet())
+        );
+    }
 }

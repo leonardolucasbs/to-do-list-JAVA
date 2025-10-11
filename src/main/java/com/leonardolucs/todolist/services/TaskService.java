@@ -1,17 +1,16 @@
 package com.leonardolucs.todolist.services;
 
 import com.leonardolucs.todolist.models.dto.TaskDTO;
-import com.leonardolucs.todolist.models.entities.Labels;
+import com.leonardolucs.todolist.models.entities.Description;
+import com.leonardolucs.todolist.models.entities.Label;
 import com.leonardolucs.todolist.models.entities.Task;
 import com.leonardolucs.todolist.models.entities.User;
-import com.leonardolucs.todolist.repositories.LabelsRepository;
+import com.leonardolucs.todolist.repositories.LabelRepository;
 import com.leonardolucs.todolist.repositories.TaskRepository;
-import com.leonardolucs.todolist.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -22,43 +21,41 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
-    private final LabelsRepository labelsRepository;
+    private final LabelRepository labelRepository;
+    private final DescriptionService descriptionService;
+    private final UserService userService;
 
-    public Task createTask(TaskDTO taskDTO) {
-        User user = userRepository.findById(taskDTO.userId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Task createTask(TaskDTO taskDTO, Long userId) {
+        User user = userService.findEntityById(userId);
 
-        Set<Labels> labels = new HashSet<>();
-        if (taskDTO.labelIds() != null && !taskDTO.labelIds().isEmpty()) {
-            labels = new HashSet<>(labelsRepository.findAllById(taskDTO.labelIds()));
+        Set<Label> labels = new HashSet<>();
+        if (taskDTO.label() != null && !taskDTO.label().isEmpty()) {
+            labels = new HashSet<>(labelRepository.findAllById(taskDTO.label()));
         }
 
         Task task = new Task();
         task.setTitle(taskDTO.title());
-        task.setDescription(taskDTO.description());
-        task.setDate(taskDTO.date());
-        task.setTime(taskDTO.time());
+        task.setDateTime(taskDTO.dateTime());
         task.setUser(user);
         task.setLabels(labels);
+        taskRepository.save(task);
+
+        Description description = descriptionService.createDescription(taskDTO.description(), task);
+        task.setDescription(description);
 
         return taskRepository.save(task);
+
     }
 
     public TaskDTO createTaskDTO(Task task){
-        Set<Long> labelIds = task.getLabels() != null ? task.getLabels().stream()
-                .map(Labels::getId)
-                .collect(Collectors.toSet()) : new HashSet<>();
+        Set<Long> idsDosLabels = new HashSet<>();
+        for (Label label : task.getLabels()) {
+            idsDosLabels.add(label.getId());
+        }
 
-        return new TaskDTO(
-                task.getTitle(),
-                task.getDate(),
-                task.getTime(),
-                task.getDescription(),
-                task.getUser().getId(),
-                labelIds
-        );
+        return task.toDto();
     }
+
 
     public ResponseEntity<?> getTaskById(Long id){
         Optional<Task> foudTask = taskRepository.findById(id);
@@ -68,8 +65,10 @@ public class TaskService {
 
     }
 
-    public List<TaskDTO> getAllTasks(){
-        return taskRepository.findAll()
+    public List<TaskDTO> getAllTasks(Long userId){
+        User user = userService.findEntityById(userId);
+
+        return user.getTasks()
                 .stream()
                 .map(this::createTaskDTO)
                 .collect(Collectors.toList());
