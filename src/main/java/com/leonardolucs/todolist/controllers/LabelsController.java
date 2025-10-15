@@ -1,6 +1,6 @@
 package com.leonardolucs.todolist.controllers;
 
-import com.leonardolucs.todolist.models.dto.LabelsDTO;
+import com.leonardolucs.todolist.models.dto.LabelDTO;
 import com.leonardolucs.todolist.models.entities.Label;
 import com.leonardolucs.todolist.services.LabelsService;
 import jakarta.validation.Valid;
@@ -19,8 +19,8 @@ public class LabelsController {
     private final LabelsService labelsService;
 
     @PostMapping
-    public ResponseEntity<Label> createLabel(@Valid @RequestBody LabelsDTO labelsDTO) {
-        Label createdLabel = labelsService.createLabel(labelsDTO);
+    public ResponseEntity<Label> createLabel(@Valid @RequestBody LabelDTO labelDTO) {
+        Label createdLabel = labelsService.createLabel(labelDTO);
         return new ResponseEntity<>(createdLabel, HttpStatus.CREATED);
     }
 
@@ -38,9 +38,9 @@ public class LabelsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Label> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelsDTO labelsDTO) {
+    public ResponseEntity<Label> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelDTO labelDTO) {
         try {
-            Label updatedLabel = labelsService.updateLabel(id, labelsDTO);
+            Label updatedLabel = labelsService.updateLabel(id, labelDTO);
             return ResponseEntity.ok(updatedLabel);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

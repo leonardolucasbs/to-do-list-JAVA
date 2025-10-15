@@ -1,5 +1,6 @@
 package com.leonardolucs.todolist.controllers;
 
+import com.leonardolucs.todolist.models.dto.CreateTaskDTO;
 import com.leonardolucs.todolist.models.dto.TaskDTO;
 import com.leonardolucs.todolist.services.TaskService;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<Void> createTask(@Valid @RequestBody TaskDTO taskDTO, @RequestParam Long userId) {
+    public ResponseEntity<Void> createTask(@Valid @RequestBody CreateTaskDTO taskDTO, @RequestParam Long userId) {
         taskService.createTask(taskDTO, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -38,5 +39,10 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+//    @PutMapping("/{taskId}")
+//    public ResponseEntity<?> updateTask(@PathVariable Long taskId, @RequestParam Long userId) {
+//        taskService.updateTask(taskId, userId );
+//        return ResponseEntity.ok().build();
+//    }
 
 }

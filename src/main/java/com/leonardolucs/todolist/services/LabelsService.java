@@ -1,6 +1,6 @@
 package com.leonardolucs.todolist.services;
 
-import com.leonardolucs.todolist.models.dto.LabelsDTO;
+import com.leonardolucs.todolist.models.dto.LabelDTO;
 import com.leonardolucs.todolist.models.entities.Label;
 import com.leonardolucs.todolist.repositories.LabelRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +15,14 @@ public class LabelsService {
 
     private final LabelRepository labelRepository;
 
-    private Label toEntity(LabelsDTO dto) {
+    private Label toEntity(LabelDTO dto) {
         Label label = new Label();
-        label.setName(dto.getName());
+        label.setName(dto.name());
         return label;
     }
 
-    public Label createLabel(LabelsDTO labelsDTO) {
-        Label label = toEntity(labelsDTO);
+    public Label createLabel(LabelDTO labelDTO) {
+        Label label = toEntity(labelDTO);
         return labelRepository.save(label);
     }
 
@@ -34,9 +34,9 @@ public class LabelsService {
         return labelRepository.findById(id);
     }
 
-    public Label updateLabel(Long id, LabelsDTO labelsDTO) {
+    public Label updateLabel(Long id, LabelDTO labelDTO) {
         return labelRepository.findById(id).map(existingLabel -> {
-            existingLabel.setName(labelsDTO.getName());
+            existingLabel.setName(labelDTO.name());
             return labelRepository.save(existingLabel);
         }).orElseThrow(() -> new RuntimeException("Label not found"));
     }

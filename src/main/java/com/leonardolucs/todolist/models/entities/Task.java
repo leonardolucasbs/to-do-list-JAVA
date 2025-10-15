@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Entity(name = "tasks")
 @NoArgsConstructor
@@ -19,7 +17,6 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class Task {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,9 +34,9 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
-    private Set<Label> labels = new HashSet<>();
+    private List<Label> labels;
 
-    @OneToOne(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "task", cascade = CascadeType.ALL)
     private Description description;
 
     public TaskDTO toDto(){
@@ -47,7 +44,7 @@ public class Task {
                 title,
                 dateTime,
                 description == null ? "" : description.getDescription(),
-                labels.stream().map(Label::getId).collect(Collectors.toSet())
+                labels
         );
     }
 }

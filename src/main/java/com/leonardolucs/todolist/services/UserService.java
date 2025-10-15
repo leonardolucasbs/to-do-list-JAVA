@@ -25,7 +25,7 @@ public class UserService {
     }
 
 
-    public User findEntityById(Long id){
+    public User findEntityById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
@@ -60,7 +60,7 @@ public class UserService {
     }
 
     public void createUser(UserDTO userDTO) {
-        User newUser = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        User newUser = new User(userDTO.name(), userDTO.email(), userDTO.password());
         userRepository.save(newUser);
     }
 
@@ -76,9 +76,9 @@ public class UserService {
         }
 
         User user = foundUser.get();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+        user.setName(userDTO.name());
+        user.setEmail(userDTO.email());
+        user.setPassword(userDTO.password());
         userRepository.save(user);
 
         return ResponseEntity.ok(createPublicUserDTO(user));
